@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - TicketArena</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Login Overlay -->
+  <div id="admin-login">
+    <div class="card" style="width: 100%; max-width: 400px; text-align: center;">
+      <h2 style="margin-bottom: 1.5rem;">Admin Login</h2>
+      <input type="password" id="admin-pass" class="form-control" placeholder="Enter Admin Password" style="margin-bottom: 1rem;">
+      <button class="btn" style="width: 100%;" onclick="checkPassword()">Login</button>
+      <p id="login-error" style="color: var(--accent-color); margin-top: 1rem; display: none;">Incorrect password.</p>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" style="display: none;">
+    <header>
+      <div class="nav-container">
+        <a href="#" class="logo">Admin<span>Panel</span></a>
+        <div class="nav-links">
+          <a href="#" onclick="logout()">Logout</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <h1 style="margin-bottom: 2rem;">Dashboard</h1>
+
+      <!-- Settings Section -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1rem;">Payment Settings</h3>
+        <form id="settings-form" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>UPI ID</label>
+            <input type="text" id="admin-upi" class="form-control" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>QR Image URL</label>
+            <input type="url" id="admin-qr" class="form-control" required>
+          </div>
+          <button type="submit" class="btn">Update Settings</button>
+        </form>
+      </div>
+
+      <!-- Bookings Table Section -->
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">All Bookings</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Match</th>
+                <th>Seat & Price</th>
+                <th>UTR No.</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-table-body">
+              <tr>
+                <td colspan="7" style="text-align: center;">Loading bookings...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function checkPassword() {
+      const pass = document.getElementById('admin-pass').value;
+      if (pass === 'admin123') {
+        document.getElementById('admin-login').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    function logout() {
+      document.getElementById('admin-pass').value = '';
+      document.getElementById('admin-dashboard').style.display = 'none';
+      document.getElementById('admin-login').style.display = 'flex';
+      document.getElementById('login-error').style.display = 'none';
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAm5CDmBfpSL4tqbJLqUm1N4iqHyUCsZ6Y",
+      authDomain: "ticketarena-ipl.firebaseapp.com",
+      databaseURL: "https://ticketarena-ipl-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "ticketarena-ipl",
+      storageBucket: "ticketarena-ipl.firebasestorage.app",
+      messagingSenderId: "460721412352",
+      appId: "1:460721412352:web:594c1fc55d4db48bdf3be5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Payment Settings Sync
+    const paymentRef = ref(db, 'settings/payment');
+    onValue(paymentRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        document.getElementById('admin-upi').value = data.upiId || '';
+        document.getElementById('admin-qr').value = data.qrImageUrl || '';
+      }
+    });
+
+    document.getElementById('settings-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const upiId = document.getElementById('admin-upi').value;
+      const qrImageUrl = document.getElementById('admin-qr').value;
+      
+      set(paymentRef, {
+        upiId: upiId,
+        qrImageUrl: qrImageUrl
+      }).then(() => alert('Payment settings updated successfully!'))
+        .catch(err => alert('Error updating settings: ' + err.message));
+    });
+
+    // Bookings Sync
+    const bookingsRef = ref(db, 'bookings');
+    onValue(bookingsRef, (snapshot) => {
+      const tbody = document.getElementById('bookings-table-body');
+      tbody.innerHTML = '';
+      
+      if (!snapshot.exists()) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No bookings found.</td></tr>';
+        return;
+      }
+
+      // Convert to array and sort by date descending
+      const bookings =
