@@ -3,65 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel | TicketArena</title>
+  <title>Admin Dashboard | TicketArena</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- Login Overlay -->
   <div id="admin-login" style="display: none;">
-    <div class="card" style="width: 100%; max-width: 400px; padding: 2rem;">
-      <h2 class="text-center mb-2">Admin Security</h2>
+    <div class="card form-container">
+      <h2 class="text-center mb-2">System Access</h2>
       <form onsubmit="window.loginAdmin(event)">
         <div class="form-group">
-          <input type="password" id="admin-pass" class="form-control" placeholder="Enter Admin Password" required>
+          <label>Admin Password</label>
+          <input type="password" id="admin-pass" class="form-control" required placeholder="••••••••">
         </div>
-        <button type="submit" class="btn" style="width: 100%;">Access Panel</button>
+        <button type="submit" class="btn w-100">Authenticate</button>
       </form>
     </div>
   </div>
 
-  <!-- Admin Dashboard -->
-  <div id="admin-dashboard" style="display: none; height: 100vh; display: flex; flex-direction: column;">
+  <!-- Dashboard -->
+  <div id="admin-dashboard" style="display: none; flex-direction: column; min-height: 100vh;">
     <header>
       <div class="container navbar">
         <a href="#" class="logo">Admin<span>Panel</span></a>
         <div class="nav-links">
-          <a href="#" onclick="window.logoutAdmin()">Logout</a>
+          <a href="#" onclick="window.logoutAdmin()" class="text-danger">Logout</a>
         </div>
       </div>
     </header>
 
     <main class="container" style="flex: 1;">
       <div class="admin-tabs">
-        <button class="tab-btn active" onclick="switchTab('tab-matches')">Manage Matches</button>
-        <button class="tab-btn" onclick="switchTab('tab-bookings')">Manage Bookings</button>
-        <button class="tab-btn" onclick="switchTab('tab-settings')">Payment Settings</button>
+        <button class="tab-btn active" onclick="switchTab('tab-matches')">Matches</button>
+        <button class="tab-btn" onclick="switchTab('tab-bookings')">Bookings</button>
+        <button class="tab-btn" onclick="switchTab('tab-settings')">System Config</button>
       </div>
 
       <!-- MATCHES TAB -->
       <div id="tab-matches" class="tab-content active">
-        <div class="card mb-2">
-          <h3 class="mb-2">Add / Edit Match</h3>
-          <form id="match-form" class="grid" style="gap: 1rem;">
+        <div class="card mb-3">
+          <h3 class="mb-2">Match Configuration</h3>
+          <form id="match-form" class="grid" style="gap: 1.5rem;">
             <input type="hidden" id="m-id">
-            <div class="form-group"><label>Team A</label><input type="text" id="m-teamA" class="form-control" required></div>
-            <div class="form-group"><label>Team B</label><input type="text" id="m-teamB" class="form-control" required></div>
-            <div class="form-group"><label>Date & Time</label><input type="datetime-local" id="m-date" class="form-control" required></div>
-            <div class="form-group"><label>Stadium</label><input type="text" id="m-stadium" class="form-control" required></div>
-            <div class="form-group"><label>General Price (₹)</label><input type="number" id="m-gen" class="form-control" required></div>
-            <div class="form-group"><label>Premium Price (₹)</label><input type="number" id="m-prem" class="form-control" required></div>
-            <div class="form-group"><label>VIP Price (₹)</label><input type="number" id="m-vip" class="form-control" required></div>
-            <div class="form-group">
+            <div class="form-group mb-0"><label>Team A</label><input type="text" id="m-teamA" class="form-control" required></div>
+            <div class="form-group mb-0"><label>Team B</label><input type="text" id="m-teamB" class="form-control" required></div>
+            <div class="form-group mb-0"><label>Date & Time</label><input type="datetime-local" id="m-date" class="form-control" required></div>
+            <div class="form-group mb-0"><label>Stadium</label><input type="text" id="m-stadium" class="form-control" required></div>
+            <div class="form-group mb-0"><label>General ₹</label><input type="number" id="m-gen" class="form-control" required></div>
+            <div class="form-group mb-0"><label>Premium ₹</label><input type="number" id="m-prem" class="form-control" required></div>
+            <div class="form-group mb-0"><label>VIP ₹</label><input type="number" id="m-vip" class="form-control" required></div>
+            <div class="form-group mb-0">
               <label>Status</label>
               <select id="m-active" class="form-control">
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
+                <option value="true">Active (Visible)</option>
+                <option value="false">Inactive (Hidden)</option>
               </select>
             </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
+            <div class="form-group mb-0" style="grid-column: 1 / -1; display: flex; gap: 1rem;">
               <button type="submit" id="match-submit-btn" class="btn">Add Match</button>
-              <button type="button" class="btn btn-secondary" onclick="document.getElementById('match-form').reset(); document.getElementById('m-id').value=''; document.getElementById('match-submit-btn').innerText='Add Match';">Clear</button>
+              <button type="button" class="btn btn-secondary" onclick="document.getElementById('match-form').reset(); document.getElementById('m-id').value=''; document.getElementById('match-submit-btn').textContent='Add Match';">Reset Form</button>
             </div>
           </form>
         </div>
@@ -70,17 +71,15 @@
           <table>
             <thead>
               <tr>
-                <th>Match</th>
-                <th>Date & Time</th>
-                <th>Stadium</th>
-                <th>Prices (G/P/V)</th>
+                <th>Teams</th>
+                <th>Schedule</th>
+                <th>Venue</th>
+                <th>Pricing (G/P/V)</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="matches-tbody">
-              <tr><td colspan="6" class="text-center">Loading matches...</td></tr>
-            </tbody>
+            <tbody id="matches-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -91,40 +90,37 @@
           <table>
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Customer Info</th>
-                <th>Booking Details</th>
+                <th>Timestamp</th>
+                <th>Customer</th>
+                <th>Match & Seat</th>
                 <th>Amount</th>
                 <th>UTR No.</th>
-                <th>Status</th>
+                <th>State</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="bookings-tbody">
-              <tr><td colspan="7" class="text-center">Loading bookings...</td></tr>
-            </tbody>
+            <tbody id="bookings-tbody"></tbody>
           </table>
         </div>
       </div>
 
       <!-- SETTINGS TAB -->
       <div id="tab-settings" class="tab-content">
-        <div class="form-container" style="margin: 0;">
-          <h3 class="mb-2">Payment Info Settings</h3>
+        <div class="card form-container" style="margin: 0;">
+          <h3 class="mb-2">Payment Gateway config</h3>
           <form id="settings-form">
             <div class="form-group">
               <label>Merchant UPI ID</label>
-              <input type="text" id="s-upi" class="form-control" required placeholder="e.g. merchant@upi">
+              <input type="text" id="s-upi" class="form-control" required placeholder="business@upi">
             </div>
             <div class="form-group">
-              <label>QR Code Image URL</label>
-              <input type="url" id="s-qr" class="form-control" required placeholder="https://link-to-qr-image.png">
+              <label>Merchant QR Code URL</label>
+              <input type="url" id="s-qr" class="form-control" required placeholder="https://domain.com/qr.png">
             </div>
-            <button type="submit" class="btn">Save Settings</button>
+            <button type="submit" class="btn w-100">Save Configuration</button>
           </form>
         </div>
       </div>
-
     </main>
   </div>
 
