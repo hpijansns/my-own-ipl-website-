@@ -3,47 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking Confirmation - TicketArena</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .thank-you-card {
-      max-width: 600px;
-      margin: 4rem auto;
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-    .check-icon {
-      font-size: 4rem;
-      color: var(--success-color);
-      margin-bottom: 1rem;
-    }
-  </style>
+  <title>Thank You | TicketArena</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header>
-    <div class="nav-container">
+    <div class="container navbar">
       <a href="index.html" class="logo">Ticket<span>Arena</span></a>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="matches.html">Matches</a>
-      </div>
     </div>
   </header>
 
-  <main>
-    <div class="card thank-you-card">
-      <div class="check-icon">✓</div>
-      <h1 style="margin-bottom: 1.5rem; color: var(--accent-color);">Booking Confirmation in Progress</h1>
-      <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary);">
+  <main class="container">
+    <div class="card form-container thankyou-card">
+      <div class="check-circle">✓</div>
+      <h1 class="text-accent mb-2">Booking Confirmation in Progress</h1>
+      <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
         Thank you for choosing TicketArena.<br>
-        We have successfully received your payment details, and our team is currently verifying your transaction.<br><br>
-        Once verification is completed, your official match ticket will be sent to your registered email address within the next few hours.<br><br>
-        <strong>See you at the stadium!</strong>
+        We have successfully received your payment details, and our team is currently verifying your transaction.
       </p>
-      <div style="margin-top: 2rem;">
-        <a href="index.html" class="btn">Return to Home</a>
-      </div>
+      <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
+        Once verification is completed, your official match ticket will be sent to your registered email address within the next few hours.<br><br>
+        <strong style="color: #FFF;">See you at the stadium!</strong>
+      </p>
+      <a href="index.html" class="btn">Return to Home</a>
     </div>
   </main>
 
