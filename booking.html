@@ -3,81 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seat Selection - TicketArena</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Seat Selection | TicketArena</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header>
-    <div class="nav-container">
+    <div class="container navbar">
       <a href="index.html" class="logo">Ticket<span>Arena</span></a>
       <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="matches.html">Matches</a>
       </div>
     </div>
   </header>
 
-  <main>
+  <main class="container">
     <div class="form-container">
-      <h2 style="margin-bottom: 1.5rem; color: var(--accent-color);">Seat Selection</h2>
-      <h3 id="match-title" style="margin-bottom: 2rem;"></h3>
+      <h2 class="text-accent mb-2">Select Your Seats</h2>
+      
+      <div class="mb-2" style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+        <h3 id="match-title">Loading Match...</h3>
+        <p id="match-details" class="text-secondary"></p>
+      </div>
 
       <form id="booking-form">
         <div class="form-group">
-          <label>Select Seat Type</label>
-          <select id="seat-type" class="form-control" required onchange="updatePrice()">
-            <option value="" disabled selected>-- Choose a category --</option>
-            <option value="General" data-price="1000">General Stand - ₹1,000</option>
-            <option value="Premium" data-price="2500">Premium Lounge - ₹2,500</option>
-            <option value="VIP" data-price="5000">VIP Box - ₹5,000</option>
+          <label for="seat-type">Seat Category</label>
+          <select id="seat-type" class="form-control" required>
+            <option value="" disabled selected>Loading seats...</option>
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group mb-2">
           <label>Total Price</label>
-          <div style="font-size: 1.5rem; font-weight: bold;">₹<span id="price-display">0</span></div>
+          <div style="font-size: 1.8rem; font-weight: bold; color: #FFF;">₹<span id="price-display">0</span></div>
         </div>
 
-        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Proceed to Checkout</button>
+        <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Proceed to Checkout</button>
       </form>
     </div>
   </main>
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const matchName = urlParams.get('match');
-
-    if (!matchName) {
-      window.location.href = 'matches.html';
-    }
-
-    document.getElementById('match-title').innerText = `Match: ${matchName}`;
-
-    function updatePrice() {
-      const select = document.getElementById('seat-type');
-      const price = select.options.getAttribute('data-price');
-      document.getElementById('price-display').innerText = price;
-    }
-
-    document.getElementById('booking-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const select = document.getElementById('seat-type');
-      if(select.value === "") {
-        alert("Please select a seat type.");
-        return;
-      }
-      const seatType = select.value;
-      const price = select.options.getAttribute('data-price');
-
-      sessionStorage.setItem('bookingData', JSON.stringify({
-        match: matchName,
-        seatType: seatType,
-        price: price
-      }));
-
-      window.location.href = 'checkout.html';
-    });
-  </script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
