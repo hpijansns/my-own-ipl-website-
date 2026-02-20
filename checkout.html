@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout | TicketArena</title>
+  <title>Secure Checkout | TicketArena</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,59 +12,63 @@
     <div class="container navbar">
       <a href="index.html" class="logo">Ticket<span>Arena</span></a>
       <div class="nav-links">
-        <a href="index.html">Cancel</a>
+        <a href="booking.html">← Back</a>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <h1 class="mb-2">Secure Checkout</h1>
+    <h1 class="mb-3 text-center">Secure Checkout</h1>
     
     <div class="checkout-layout">
-      <!-- User Details -->
+      <!-- Left Col: Details -->
       <div class="card">
-        <h3 class="mb-2">Passenger Details</h3>
+        <h3 class="mb-2">Passenger Information</h3>
         <form id="checkout-form">
           <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" class="form-control" required placeholder="Enter as per ID proof">
+            <label for="name">Full Name (As per ID)</label>
+            <input type="text" id="name" class="form-control" required placeholder="John Doe">
           </div>
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" class="form-control" required placeholder="ticket@example.com">
+            <input type="email" id="email" class="form-control" required placeholder="john@example.com">
           </div>
           <div class="form-group">
             <label for="mobile">Mobile Number</label>
-            <input type="tel" id="mobile" class="form-control" required pattern="{10}" placeholder="10-digit number">
+            <input type="tel" id="mobile" class="form-control" required pattern="{10}" title="10-digit mobile number" placeholder="9876543210">
           </div>
 
-          <div class="mt-2" style="border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
-            <h4 class="mb-2">Booking Summary</h4>
-            <p><strong>Match:</strong> <span id="summary-match"></span></p>
-            <p><strong>Seat:</strong> <span id="summary-seat"></span></p>
-            <p style="font-size: 1.2rem; margin-top: 0.5rem;"><strong>Amount to Pay: <span class="text-accent">₹<span id="summary-price"></span></span></strong></p>
+          <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 2rem;">
+            <h4 class="mb-1 text-muted">Order Summary</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>Match</span> <strong id="summary-match"></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+              <span>Seat Type</span> <strong class="text-accent" id="summary-seat"></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 1rem;">
+              <span>Total Pay</span> <span>₹<span id="summary-price"></span></span>
+            </div>
           </div>
         </form>
       </div>
 
-      <!-- Payment details -->
+      <!-- Right Col: Payment -->
       <div class="card">
-        <h3 class="mb-2">Scan & Pay via UPI</h3>
-        <p class="text-secondary mb-2">Scan the QR code or use the UPI ID below to make the exact payment. Enter the 12-digit UTR/Reference number to confirm.</p>
+        <h3 class="mb-1">Payment Verification</h3>
+        <p class="text-muted mb-2" style="font-size: 0.95rem;">Scan the QR code or use the UPI ID to transfer the exact amount. Then enter the 12-digit UTR below.</p>
         
         <div class="qr-box">
-          <img id="qr-image" src="" alt="UPI QR Code" style="display: none;">
-          <div id="qr-placeholder" style="color: #000; padding: 2rem 0;">Loading QR...</div>
-        </div>
-        
-        <div class="upi-text" id="upi-display">Loading UPI...</div>
-
-        <div class="form-group mt-2">
-          <label for="utr">Enter 12-Digit UTR / Ref Number</label>
-          <input type="text" id="utr" form="checkout-form" class="form-control" required pattern="{12}" title="Must be exactly 12 digits" placeholder="e.g. 301234567890">
+          <img id="qr-image" src="" alt="Merchant QR" style="display: none; margin: 0 auto;">
+          <div class="upi-text mt-2" id="upi-display">Loading...</div>
         </div>
 
-        <button type="submit" form="checkout-form" id="submit-btn" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Complete Booking</button>
+        <div class="form-group">
+          <label for="utr">12-Digit UTR / Reference Number</label>
+          <input type="text" id="utr" form="checkout-form" class="form-control" required pattern="{12}" title="Exact 12-digit UTR number" placeholder="e.g. 301234567890">
+        </div>
+
+        <button type="submit" form="checkout-form" id="submit-btn" class="btn btn-success w-100" style="padding: 1rem; font-size: 1.1rem; margin-top: 1rem;">Confirm Booking</button>
       </div>
     </div>
   </main>
