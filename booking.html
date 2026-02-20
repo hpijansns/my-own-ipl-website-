@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seat Selection | TicketArena</title>
+  <title>Select Seats | TicketArena</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,34 +12,36 @@
     <div class="container navbar">
       <a href="index.html" class="logo">Ticket<span>Arena</span></a>
       <div class="nav-links">
-        <a href="index.html">Home</a>
+        <a href="index.html">← Back to Matches</a>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <div class="form-container">
-      <h2 class="text-accent mb-2">Select Your Seats</h2>
+    <div class="card form-container">
+      <h2 class="text-accent mb-2 text-center">Seat Selection</h2>
       
-      <div class="mb-2" style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
-        <h3 id="match-title">Loading Match...</h3>
-        <p id="match-details" class="text-secondary"></p>
+      <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid var(--border);">
+        <h3 id="match-title" style="margin-bottom: 0.5rem;">Loading...</h3>
+        <p id="match-details" class="text-muted" style="font-size: 0.95rem;"></p>
       </div>
 
       <form id="booking-form">
         <div class="form-group">
-          <label for="seat-type">Seat Category</label>
+          <label for="seat-type">Select Category</label>
           <select id="seat-type" class="form-control" required>
-            <option value="" disabled selected>Loading seats...</option>
+            <option value="" disabled selected>Loading options...</option>
           </select>
         </div>
 
         <div class="form-group mb-2">
-          <label>Total Price</label>
-          <div style="font-size: 1.8rem; font-weight: bold; color: #FFF;">₹<span id="price-display">0</span></div>
+          <label>Total Amount</label>
+          <div style="font-size: 2.5rem; font-weight: 800; color: #FFF; letter-spacing: -1px;">
+            ₹<span id="price-display">0</span>
+          </div>
         </div>
 
-        <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Proceed to Checkout</button>
+        <button type="submit" class="btn w-100" style="padding: 1rem; font-size: 1.1rem;">Continue to Payment</button>
       </form>
     </div>
   </main>
