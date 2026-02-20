@@ -1,58 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upcoming Matches - TicketArena</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <title>Matches - TicketArena</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <header>
-    <div class="nav-container">
-      <a href="index.html" class="logo">Ticket<span>Arena</span></a>
-      <div class="nav-links">
+<header class="navbar">
+    <h1>TicketArena</h1>
+    <nav>
         <a href="index.html">Home</a>
-        <a href="matches.html">Matches</a>
-      </div>
+        <a href="admin.html">Admin</a>
+    </nav>
+</header>
+
+<section class="page-section">
+    <h2 class="section-title">Available Matches</h2>
+    <div id="matchesContainer" class="card-grid">
+        <div class="loader">Loading matches...</div>
     </div>
-  </header>
+</section>
 
-  <main>
-    <h1 style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">Upcoming Matches</h1>
-    
-    <div class="grid" id="matches-grid">
-      <!-- Hardcoded match list for demonstration -->
-      <div class="card">
-        <h3>CSK vs MI</h3>
-        <p><strong>Date:</strong> 15 April 2026<br><strong>Venue:</strong> M. A. Chidambaram Stadium</p>
-        <button class="btn" onclick="bookMatch('CSK vs MI')">Book Tickets</button>
-      </div>
+<script type="module">
+import { db } from "./js/firebase.js";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-      <div class="card">
-        <h3>RCB vs KKR</h3>
-        <p><strong>Date:</strong> 18 April 2026<br><strong>Venue:</strong> M. Chinnaswamy Stadium</p>
-        <button class="btn" onclick="bookMatch('RCB vs KKR')">Book Tickets</button>
-      </div>
+const container = document.getElementById("matchesContainer");
 
-      <div class="card">
-        <h3>GT vs RR</h3>
-        <p><strong>Date:</strong> 22 April 2026<br><strong>Venue:</strong> Narendra Modi Stadium</p>
-        <button class="btn" onclick="bookMatch('GT vs RR')">Book Tickets</button>
-      </div>
+const matchesRef = ref(db, "matches");
 
-      <div class="card">
-        <h3>DC vs LSG</h3>
-        <p><strong>Date:</strong> 25 April 2026<br><strong>Venue:</strong> Arun Jaitley Stadium</p>
-        <button class="btn" onclick="bookMatch('DC vs LSG')">Book Tickets</button>
-      </div>
-    </div>
-  </main>
+onValue(matchesRef, (snapshot) => {
+    container.innerHTML = "";
 
-  <script>
-    function bookMatch(matchName) {
-      window.location.href = `booking.html?match=${encodeURIComponent(matchName)}`;
+    if (!snapshot.exists()) {
+        container.innerHTML = "<p class='empty'>No matches available.</p>";
+        return;
     }
-  </script>
+
+    snapshot.forEach((child) => {
+        const match = child.val();
+
+        if (!match.active) return;
+
+        const card = document.createElement("div");
+        card.className = "match-card";
+
+        card.innerHTML = `
+            <h3>${match.teamA} vs ${match.teamB}</h3>
+            <p><strong>Date:</strong> ${match.date}</p>
+            <p><strong>Stadium:</strong> ${match.stadium}</p>
+            <button class="primary-btn" data-id="${child.key}">
+                Book Now
+            </button>
+        `;
+
+        card.querySelector("button").addEventListener("click", () => {
+            localStorage.setItem("selectedMatchId", child.key);
+            window.location.href = "booking.html";
+        });
+
+        container.appendChild(card);
+    });
+
+});
+</script>
+
 </body>
 </html>
