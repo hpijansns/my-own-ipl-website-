@@ -3,179 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout - TicketArena</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Checkout | TicketArena</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header>
-    <div class="nav-container">
+    <div class="container navbar">
       <a href="index.html" class="logo">Ticket<span>Arena</span></a>
       <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="matches.html">Matches</a>
+        <a href="index.html">Cancel</a>
       </div>
     </div>
   </header>
 
-  <main>
-    <h1 style="margin-bottom: 2rem;">Checkout</h1>
+  <main class="container">
+    <h1 class="mb-2">Secure Checkout</h1>
     
-    <div class="checkout-grid">
-      <!-- User Details Form -->
+    <div class="checkout-layout">
+      <!-- User Details -->
       <div class="card">
-        <h3 style="margin-bottom: 1.5rem;">Passenger & Contact Details</h3>
+        <h3 class="mb-2">Passenger Details</h3>
         <form id="checkout-form">
           <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="name" class="form-control" required placeholder="Enter your full name">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" class="form-control" required placeholder="Enter as per ID proof">
           </div>
           <div class="form-group">
-            <label>Email Address</label>
+            <label for="email">Email Address</label>
             <input type="email" id="email" class="form-control" required placeholder="ticket@example.com">
           </div>
           <div class="form-group">
-            <label>Mobile Number</label>
-            <input type="tel" id="mobile" class="form-control" required pattern="{10}" placeholder="10-digit mobile number">
+            <label for="mobile">Mobile Number</label>
+            <input type="tel" id="mobile" class="form-control" required pattern="{10}" placeholder="10-digit number">
           </div>
 
-          <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-            <h4 style="margin-bottom: 1rem;">Order Summary</h4>
+          <div class="mt-2" style="border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+            <h4 class="mb-2">Booking Summary</h4>
             <p><strong>Match:</strong> <span id="summary-match"></span></p>
             <p><strong>Seat:</strong> <span id="summary-seat"></span></p>
-            <p style="font-size: 1.2rem; color: var(--accent-color); margin-top: 0.5rem;"><strong>Amount to Pay: ₹<span id="summary-price"></span></strong></p>
+            <p style="font-size: 1.2rem; margin-top: 0.5rem;"><strong>Amount to Pay: <span class="text-accent">₹<span id="summary-price"></span></span></strong></p>
           </div>
         </form>
       </div>
 
-      <!-- Payment Section -->
+      <!-- Payment details -->
       <div class="card">
-        <h3 style="margin-bottom: 1.5rem;">Scan & Pay via UPI</h3>
-        <p style="margin-bottom: 1rem; color: var(--text-secondary);">Please scan the QR code below or use the UPI ID to make the payment. Then enter the 12-digit UTR/Reference number.</p>
+        <h3 class="mb-2">Scan & Pay via UPI</h3>
+        <p class="text-secondary mb-2">Scan the QR code or use the UPI ID below to make the exact payment. Enter the 12-digit UTR/Reference number to confirm.</p>
         
-        <div class="qr-container">
-          <img id="qr-image" src="" alt="Loading QR..." style="display: none;">
-          <div id="qr-loading" style="color: #000;">Loading QR Code...</div>
+        <div class="qr-box">
+          <img id="qr-image" src="" alt="UPI QR Code" style="display: none;">
+          <div id="qr-placeholder" style="color: #000; padding: 2rem 0;">Loading QR...</div>
         </div>
         
-        <div class="upi-id" id="upi-id-display">Loading UPI ID...</div>
+        <div class="upi-text" id="upi-display">Loading UPI...</div>
 
-        <div class="form-group" style="margin-top: 2rem;">
-          <label>Enter 12-Digit UTR / Reference Number</label>
-          <input type="text" id="utr" form="checkout-form" class="form-control" required pattern="{12}" placeholder="e.g. 301234567890">
+        <div class="form-group mt-2">
+          <label for="utr">Enter 12-Digit UTR / Ref Number</label>
+          <input type="text" id="utr" form="checkout-form" class="form-control" required pattern="{12}" title="Must be exactly 12 digits" placeholder="e.g. 301234567890">
         </div>
 
-        <button type="submit" form="checkout-form" class="btn" style="width: 100%; margin-top: 1rem;" id="submit-btn">Complete Booking</button>
+        <button type="submit" form="checkout-form" id="submit-btn" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Complete Booking</button>
       </div>
     </div>
   </main>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, onValue, get, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAm5CDmBfpSL4tqbJLqUm1N4iqHyUCsZ6Y",
-      authDomain: "ticketarena-ipl.firebaseapp.com",
-      databaseURL: "https://ticketarena-ipl-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "ticketarena-ipl",
-      storageBucket: "ticketarena-ipl.firebasestorage.app",
-      messagingSenderId: "460721412352",
-      appId: "1:460721412352:web:594c1fc55d4db48bdf3be5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Load Session Data
-    const bookingDataStr = sessionStorage.getItem('bookingData');
-    if (!bookingDataStr) {
-      window.location.href = 'matches.html';
-    }
-    const bookingData = JSON.parse(bookingDataStr);
-
-    document.getElementById('summary-match').innerText = bookingData.match;
-    document.getElementById('summary-seat').innerText = bookingData.seatType;
-    document.getElementById('summary-price').innerText = bookingData.price;
-
-    // Fetch Payment Settings
-    const paymentRef = ref(db, 'settings/payment');
-    onValue(paymentRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        document.getElementById('upi-id-display').innerText = data.upiId || 'Not Configured';
-        if (data.qrImageUrl) {
-          document.getElementById('qr-image').src = data.qrImageUrl;
-          document.getElementById('qr-image').style.display = 'inline-block';
-          document.getElementById('qr-loading').style.display = 'none';
-        } else {
-          document.getElementById('qr-loading').innerText = 'QR Image not set by admin.';
-        }
-      } else {
-        document.getElementById('upi-id-display').innerText = 'Not Configured';
-        document.getElementById('qr-loading').innerText = 'QR Image not set by admin.';
-      }
-    });
-
-    // Handle Submission
-    document.getElementById('checkout-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.innerText = 'Processing...';
-
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const mobile = document.getElementById('mobile').value.trim();
-      const utr = document.getElementById('utr').value.trim();
-
-      try {
-        // Prevent duplicate UTR
-        const bookingsRef = ref(db, 'bookings');
-        const snapshot = await get(bookingsRef);
-        let isDuplicate = false;
-        
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            if (child.val().utr === utr) {
-              isDuplicate = true;
-            }
-          });
-        }
-
-        if (isDuplicate) {
-          alert('This UTR number has already been submitted. Please check your UTR or contact support.');
-          btn.disabled = false;
-          btn.innerText = 'Complete Booking';
-          return;
-        }
-
-        // Save Booking
-        const newBookingRef = push(bookingsRef);
-        await set(newBookingRef, {
-          name: name,
-          email: email,
-          mobile: mobile,
-          match: bookingData.match,
-          seatType: bookingData.seatType,
-          price: bookingData.price,
-          utr: utr,
-          status: "Pending",
-          createdAt: new Date().toISOString()
-        });
-
-        // Clear session and redirect
-        sessionStorage.removeItem('bookingData');
-        window.location.href = 'thankyou.html';
-
-      } catch (error) {
-        console.error("Booking Error: ", error);
-        alert('An error occurred while processing your booking. Please try again.');
-        btn.disabled = false;
-        btn.innerText = 'Complete Booking';
-      }
-    });
-  </script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
